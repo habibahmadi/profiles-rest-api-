@@ -7,7 +7,7 @@ from django.contrib.auth.models import BaseUserManager
 #modify this file to enclude our user provfile model.
 
 
-class userProfileManager(BaseUserManager):
+class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
     #add some function to maniputed the model the manager is for.
     def create_user(self, email, name, password=None):
@@ -22,7 +22,7 @@ class userProfileManager(BaseUserManager):
         user = self.model(email=email, name=name)
         #set password, this way the password is hashed not a clear text. django encrypts password with set
         #set password function.
-        user = set_password(password)
+        user.set_password(password)
         #same the user. Use <using=self._dd> this will make sure that the user will be saved on multiple
         #database.
         user.save()
@@ -32,7 +32,7 @@ class userProfileManager(BaseUserManager):
     #this will user our create_user function to create a new user but also assign super_user status.
     #like admin user in the system.
     #we want the password not be none. so that all super user have one.
-    def create_superuser(self, name, password):
+    def create_superuser(self, name, password, email):
         """Create and save a new superuser with given detail"""
         user =self.create_user(email, name, password)
 
@@ -49,7 +49,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         is_active = models.BooleanField(default=True)
         is_staff = models.BooleanField(default=False )
         #specify the model manager for the user model so it know how to create a user.
-        objects = userProfileManager()
+        objects = UserProfileManager()
         USERNAME_FIELD = 'email'
         REQUIRED_FIELDS = ['name']
 
